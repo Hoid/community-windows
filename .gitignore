@@ -12,7 +12,7 @@
 
 # Vite
 **/dist/
-window-ui/static/
+window-file/static/
 
 # Environment variables
 **/.env
