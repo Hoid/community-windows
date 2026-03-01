@@ -1,0 +1,69 @@
+{
+  "specVersion": "0.1.0",
+  "generatedAt": "2026-02-26T18:00:00Z",
+  "instance": {
+    "name": "Example Community Server",
+    "url": "https://example.social"
+  },
+  "description": "A curious community for people who are passionate about rock climbing and bouldering.",
+  "contentWarnings": ["Gruesome language when discussing climbing injuries"],
+  "topicTags": [
+    "rock-climbing",
+    "bouldering",
+    "outdoor-climbing",
+    "indoor-climbing",
+    "rock-climbing-gear",
+    "bouldering-gear",
+    "outdoor-climbing-gear",
+    "indoor-climbing-gear"
+  ],
+  "pinnedContent": [
+    {
+      "title": "Community Welcome Thread",
+      "url": "https://example.social/@mods/111111111111111111",
+      "notes": "Welcome to the community! Please read the pinned post for a guide on how to participate."
+    },
+    {
+      "title": "Monthly Project Showcase",
+      "url": "https://example.social/tags/showcase"
+    }
+  ],
+  "membershipSizeRange": "medium",
+  "linkPolicy": "We federate broadly, and may limit federation with instances that show repeated harassment or coordinated abuse patterns.",
+  "memberFitSignals": {
+    "lookingFor": [
+      "Curiosity about different cultures and communities",
+      "People who can disagree constructively"
+    ],
+    "notLookingFor": [
+      "Spam or growth hacking",
+      "Harassment or bad-faith conflict",
+      "*Anti-social* political discussion"
+    ]
+  },
+  "llmScrapingPolicy": {
+    "mode": "disallow",
+    "llmsTxtUrl": "https://example.social/llms.txt"
+  },
+  "moderationSatisfaction": {
+    "source": "mod-health-lib",
+    "score": 0.83,
+    "sampleSize": 215,
+    "lastUpdated": "2026-02-20T10:00:00Z"
+  },
+  "customFields": [
+    {
+      "key": "who_thrives_here",
+      "label": "Who Thrives Here",
+      "value": "People who like learning, teaching, exploring new places, and sharing their experiences."
+    }
+  ],
+  "lurkerRatio": 0.46,
+  "adjacentCommunities": [
+    {
+      "name": "Boulder CO Bouldering Club (BCBC)",
+      "url": "https://bcb.example.club",
+      "relationshipTypes": ["friendly_neighbor", "high_interaction"]
+    }
+  ]
+}

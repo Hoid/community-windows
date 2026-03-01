@@ -1,0 +1,166 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://community-window.dev/schema/community-window.schema.json",
+  "title": "Community Window",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "specVersion",
+    "generatedAt",
+    "description",
+    "contentWarnings",
+    "topicTags",
+    "pinnedContent",
+    "membershipSizeRange",
+    "linkPolicy",
+    "memberFitSignals",
+    "llmScrapingPolicy"
+  ],
+  "properties": {
+    "specVersion": {
+      "type": "string",
+      "pattern": "^0\\.1\\.0$"
+    },
+    "generatedAt": {
+      "type": "string",
+      "format": "date-time"
+    },
+    "instance": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "url"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1 },
+        "url": { "type": "string", "format": "uri" }
+      }
+    },
+    "description": { "type": "string", "minLength": 1, "maxLength": 5000 },
+    "contentWarnings": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 120 },
+      "maxItems": 50
+    },
+    "topicTags": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1, "maxLength": 60 },
+      "maxItems": 100
+    },
+    "pinnedContent": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/pinnedContentItem" },
+      "maxItems": 20
+    },
+    "membershipSizeRange": {
+      "type": "string",
+      "enum": ["tiny", "small", "medium", "large", "very_large"]
+    },
+    "linkPolicy": { "type": "string", "minLength": 1, "maxLength": 5000 },
+    "memberFitSignals": { "$ref": "#/$defs/memberFitSignals" },
+    "llmScrapingPolicy": { "$ref": "#/$defs/llmScrapingPolicy" },
+    "moderationSatisfaction": { "$ref": "#/$defs/moderationSatisfaction" },
+    "customFields": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/customField" },
+      "maxItems": 100
+    },
+    "lurkerRatio": {
+      "type": "number",
+      "minimum": 0,
+      "maximum": 1
+    },
+    "adjacentCommunities": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/adjacentCommunity" },
+      "maxItems": 50
+    }
+  },
+  "$defs": {
+    "pinnedContentItem": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["title", "url"],
+      "properties": {
+        "title": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "url": { "type": "string", "format": "uri" },
+        "notes": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "memberFitSignals": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["lookingFor", "notLookingFor"],
+      "properties": {
+        "lookingFor": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "maxItems": 100
+        },
+        "notLookingFor": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 1, "maxLength": 120 },
+          "maxItems": 100
+        }
+      }
+    },
+    "llmScrapingPolicy": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["mode"],
+      "properties": {
+        "mode": {
+          "type": "string",
+          "enum": ["allow", "disallow", "undefined"]
+        },
+        "llmsTxtUrl": { "type": "string", "format": "uri" }
+      }
+    },
+    "moderationSatisfaction": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["source", "score"],
+      "properties": {
+        "source": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "score": { "type": "number", "minimum": 0, "maximum": 1 },
+        "sampleSize": { "type": "integer", "minimum": 0 },
+        "lastUpdated": { "type": "string", "format": "date-time" }
+      }
+    },
+    "customField": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["key", "label", "value"],
+      "properties": {
+        "key": {
+          "type": "string",
+          "pattern": "^[a-z0-9_\\-]{1,64}$"
+        },
+        "label": { "type": "string", "minLength": 1, "maxLength": 120 },
+        "value": { "type": "string", "minLength": 1, "maxLength": 5000 }
+      }
+    },
+    "adjacentCommunity": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["name", "url", "relationshipTypes"],
+      "properties": {
+        "name": { "type": "string", "minLength": 1, "maxLength": 200 },
+        "url": { "type": "string", "format": "uri" },
+        "relationshipTypes": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": [
+              "friendly_neighbor",
+              "high_interaction",
+              "alternative_home",
+              "other"
+            ]
+          },
+          "minItems": 1,
+          "maxItems": 10,
+          "uniqueItems": true
+        }
+      }
+    }
+  }
+}

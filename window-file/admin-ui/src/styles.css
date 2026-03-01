@@ -1,0 +1,111 @@
+:root {
+  font-family: Inter, system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+  line-height: 1.4;
+}
+
+body {
+  margin: 0;
+  background: #f6f6fb;
+  color: #151515;
+}
+
+.shell {
+  max-width: 900px;
+  margin: 0 auto;
+  padding: 2rem 1rem 4rem;
+}
+
+h1 {
+  margin: 0;
+}
+
+header p {
+  margin-top: 0.3rem;
+  color: #4f4f5a;
+}
+
+.actions {
+  display: flex;
+  gap: 0.75rem;
+  margin: 1rem 0 0.5rem;
+}
+
+button {
+  border: 1px solid #4747d7;
+  background: #4747d7;
+  color: #fff;
+  border-radius: 6px;
+  padding: 0.45rem 0.8rem;
+  cursor: pointer;
+}
+
+button.secondary {
+  background: #fff;
+  color: #4747d7;
+}
+
+button.delete {
+  background: #fff;
+  color: #a40d0d;
+  border-color: #a40d0d;
+}
+
+.status-line {
+  min-height: 1.2rem;
+  margin: 0.3rem 0 1rem;
+}
+
+.status-error {
+  color: #a40d0d;
+}
+
+.status-ok {
+  color: #136614;
+}
+
+.card {
+  background: #fff;
+  border: 1px solid #d5d7e5;
+  border-radius: 10px;
+  padding: 1rem;
+  margin: 0 0 1rem;
+}
+
+.field {
+  margin: 0 0 0.8rem;
+}
+
+.field label {
+  font-weight: 600;
+  display: block;
+  margin: 0 0 0.3rem;
+}
+
+.field input,
+.field textarea,
+.field select {
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #b8bed3;
+  border-radius: 6px;
+  padding: 0.5rem;
+  font: inherit;
+}
+
+.row-list {
+  display: grid;
+  gap: 0.6rem;
+}
+
+.list-item {
+  border: 1px dashed #c7ccdd;
+  border-radius: 8px;
+  padding: 0.7rem;
+  background: #fbfcff;
+}
+
+.list-item-actions {
+  display: flex;
+  justify-content: flex-end;
+  margin-top: 0.5rem;
+}

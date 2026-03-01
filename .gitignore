@@ -1,0 +1,18 @@
+# IDE settings
+.vscode/
+
+# Python
+**/*__pycache__/
+**/.venv/
+**/.pytest_cache/
+**/.ruff_cache/
+
+# Node
+**/node_modules/
+
+# Vite
+**/dist/
+window-ui/static/
+
+# Environment variables
+**/.env

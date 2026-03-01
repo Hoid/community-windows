@@ -1,0 +1,13 @@
+{
+  "include": ["window-file/app", "window-file/tests"],
+  "venvPath": "window-file",
+  "venv": ".venv",
+  "executionEnvironments": [
+    {
+      "root": "window-file",
+      "extraPaths": ["window-file"]
+    }
+  ],
+  "pythonVersion": "3.12",
+  "typeCheckingMode": "basic"
+}
