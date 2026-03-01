@@ -16,6 +16,7 @@ APP_DIR = Path(__file__).resolve().parent
 ROOT_DIR = APP_DIR.parent
 ADMIN_DIR = ROOT_DIR / "static" / "admin"
 ADMIN_INDEX = ADMIN_DIR / "index.html"
+ADMIN_ASSETS_DIR = ADMIN_DIR / "assets"
 
 LOCAL_HOSTS = {"127.0.0.1", "::1", "localhost", "testclient"}
 LOGGER = logging.getLogger(__name__)
@@ -52,7 +53,7 @@ def _raise_if_stored_document_invalid(payload: dict) -> None:
 @app.middleware("http")
 async def localhost_admin_guard(request: Request, call_next):
     path = request.url.path
-    if path.startswith("/admin"):
+    if path.startswith("/admin") or path.startswith("/assets"):
         client_host = request.client.host if request.client else None
         if client_host not in LOCAL_HOSTS:
             return JSONResponse(
@@ -103,3 +104,6 @@ def get_admin_index() -> FileResponse:
 
 if ADMIN_DIR.exists():
     app.mount("/admin", StaticFiles(directory=ADMIN_DIR, html=True), name="admin")
+
+if ADMIN_ASSETS_DIR.exists():
+    app.mount("/assets", StaticFiles(directory=ADMIN_ASSETS_DIR), name="admin-assets")
