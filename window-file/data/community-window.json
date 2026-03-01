@@ -1,12 +1,11 @@
 {
   "specVersion": "0.1.0",
-  "generatedAt": "2026-02-26T18:00:00Z",
-  "instance": {
-    "name": "Example Community Server",
-    "url": "https://example.social"
-  },
+  "generatedAt": "2026-03-01T20:26:14.560420+00:00",
+  "instance": null,
   "description": "A curious community for people who are passionate about rock climbing and bouldering.",
-  "contentWarnings": ["Gruesome language when discussing climbing injuries"],
+  "contentWarnings": [
+    "Gruesome language when discussing climbing injuries"
+  ],
   "topicTags": [
     "rock-climbing",
     "bouldering",
@@ -25,10 +24,11 @@
     },
     {
       "title": "Monthly Project Showcase",
-      "url": "https://example.social/tags/showcase"
+      "url": "https://example.social/tags/showcase",
+      "notes": ""
     }
   ],
-  "membershipSizeRange": "medium",
+  "membershipSizeRange": "small",
   "linkPolicy": "We federate broadly, and may limit federation with instances that show repeated harassment or coordinated abuse patterns.",
   "memberFitSignals": {
     "lookingFor": [
@@ -48,8 +48,8 @@
   "moderationSatisfaction": {
     "source": "mod-health-lib",
     "score": 0.83,
-    "sampleSize": 215,
-    "lastUpdated": "2026-02-20T10:00:00Z"
+    "sampleSize": null,
+    "lastUpdated": null
   },
   "customFields": [
     {
@@ -62,8 +62,11 @@
   "adjacentCommunities": [
     {
       "name": "Boulder CO Bouldering Club (BCBC)",
-      "url": "https://bcb.example.club",
-      "relationshipTypes": ["friendly_neighbor", "high_interaction"]
+      "url": "https://bcb.example.club/",
+      "relationshipTypes": [
+        "friendly_neighbor",
+        "high_interaction"
+      ]
     }
   ]
 }
