@@ -2,6 +2,8 @@
 
 Community Windows is an open standard and toolset for fediverse instances to voluntarily publish a curated, self-described profile of their community.
 
+This project is a work in progress, but it works and could be improved by anyone who has ideas on how to do so! If you have thoughts, please feel free to use the Issues section above or message me directly on Bluesky (which is in on my profile here).
+
 Rather than relying on third-party scraping or indexing, instance admins use a simple admin interface to craft a snapshot of what their community is about; its culture, tone, topic focus, and other qualitative signals. This gets served at a standardized `/.well-known/community-window` endpoint on their instance. A default display interface renders this information as an attractive, human-readable landing page, while the underlying JSON format allows aggregators and discovery tools to build opt-in fediverse directories. The goal is to help with the fediverse's discoverability problem without compromising the community autonomy and privacy that make the fediverse worth joining in the first place.
 
 This repository is split into two projects:
