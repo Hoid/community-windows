@@ -23,7 +23,40 @@ class MembershipSizeRange(str, Enum):
     SMALL = "small"
     MEDIUM = "medium"
     LARGE = "large"
-    VERY_LARGE = "very_large"
+    XLARGE = "xlarge"
+    XXLARGE = "xxlarge"
+    HUGE = "huge"
+    MASSIVE = "massive"
+
+
+class MembershipSize(BaseModel):
+    model_config = ConfigDict(extra="forbid")
+
+    tier: MembershipSizeRange
+    minUsers: Annotated[int, Field(ge=1)]
+    maxUsers: Annotated[int, Field(ge=1)] | None = None
+
+    @model_validator(mode="after")
+    def validate_bounds(self) -> MembershipSize:
+        if self.maxUsers is not None and self.maxUsers < self.minUsers:
+            raise ValueError("maxUsers must be greater than or equal to minUsers")
+
+        expected_bounds = {
+            MembershipSizeRange.TINY: (1, 50),
+            MembershipSizeRange.SMALL: (51, 100),
+            MembershipSizeRange.MEDIUM: (101, 500),
+            MembershipSizeRange.LARGE: (501, 2000),
+            MembershipSizeRange.XLARGE: (2001, 10000),
+            MembershipSizeRange.XXLARGE: (10001, 50000),
+            MembershipSizeRange.HUGE: (50001, 200000),
+            MembershipSizeRange.MASSIVE: (200001, None),
+        }
+        expected_min, expected_max = expected_bounds[self.tier]
+        if self.minUsers != expected_min or self.maxUsers != expected_max:
+            raise ValueError(
+                "membershipSize bounds must match the canonical range for the selected tier"
+            )
+        return self
 
 
 class LlmPolicyMode(str, Enum):
@@ -124,7 +157,7 @@ class CommunityWindow(BaseModel):
     contentWarnings: list[ShortText] = Field(default_factory=list, max_length=50)
     topicTags: list[TopicTag] = Field(default_factory=list, max_length=100)
     pinnedContent: list[PinnedContentItem] = Field(default_factory=list, max_length=20)
-    membershipSizeRange: MembershipSizeRange
+    membershipSize: MembershipSize
     linkPolicy: LongText
     memberFitSignals: MemberFitSignals
     llmScrapingPolicy: LlmScrapingPolicy

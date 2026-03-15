@@ -53,7 +53,7 @@ def safe_validate(payload: dict) -> tuple[dict | None, list[dict]]:
     try:
         model = validate_window_payload(payload)
     except PydanticValidationError as error:
-        return None, error.errors()
+        return None, error.errors(include_context=False)
     except ValidationError as error:
         return None, [{"loc": ["jsonschema"], "msg": error.message, "type": "value_error.jsonschema"}]
 

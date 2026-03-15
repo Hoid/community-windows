@@ -11,7 +11,7 @@
     "contentWarnings",
     "topicTags",
     "pinnedContent",
-    "membershipSizeRange",
+    "membershipSize",
     "linkPolicy",
     "memberFitSignals",
     "llmScrapingPolicy"
@@ -50,10 +50,7 @@
       "items": { "$ref": "#/$defs/pinnedContentItem" },
       "maxItems": 20
     },
-    "membershipSizeRange": {
-      "type": "string",
-      "enum": ["tiny", "small", "medium", "large", "very_large"]
-    },
+    "membershipSize": { "$ref": "#/$defs/membershipSize" },
     "linkPolicy": { "type": "string", "minLength": 1, "maxLength": 5000 },
     "memberFitSignals": { "$ref": "#/$defs/memberFitSignals" },
     "llmScrapingPolicy": { "$ref": "#/$defs/llmScrapingPolicy" },
@@ -83,6 +80,28 @@
         "title": { "type": "string", "minLength": 1, "maxLength": 200 },
         "url": { "type": "string", "format": "uri" },
         "notes": { "type": "string", "maxLength": 2000 }
+      }
+    },
+    "membershipSize": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["tier", "minUsers"],
+      "properties": {
+        "tier": {
+          "type": "string",
+          "enum": [
+            "tiny",
+            "small",
+            "medium",
+            "large",
+            "xlarge",
+            "xxlarge",
+            "huge",
+            "massive"
+          ]
+        },
+        "minUsers": { "type": "integer", "minimum": 1 },
+        "maxUsers": { "type": ["integer", "null"], "minimum": 1 }
       }
     },
     "memberFitSignals": {

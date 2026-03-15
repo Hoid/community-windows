@@ -28,7 +28,11 @@
       "notes": ""
     }
   ],
-  "membershipSizeRange": "small",
+  "membershipSize": {
+    "tier": "small",
+    "minUsers": 51,
+    "maxUsers": 100
+  },
   "linkPolicy": "We federate broadly, and may limit federation with instances that show repeated harassment or coordinated abuse patterns.",
   "memberFitSignals": {
     "lookingFor": [

@@ -38,8 +38,31 @@ function renderExternalLink(url, label) {
   return `<a href="${safeUrl}" target="_blank" rel="noreferrer">${safeLabel}</a>`;
 }
 
-function formatEnum(value) {
-  return typeof value === "string" ? value.replaceAll("_", " ") : "n/a";
+const MEMBERSHIP_SIZE_LABELS = {
+  tiny: "Tiny",
+  small: "Small",
+  medium: "Medium",
+  large: "Large",
+  xlarge: "XLarge",
+  xxlarge: "XXLarge",
+  huge: "Huge",
+  massive: "Massive",
+};
+
+function formatMembershipSize(value) {
+  if (!value || typeof value !== "object") {
+    return "n/a";
+  }
+  const tier = typeof value.tier === "string" ? value.tier : null;
+  const minUsers = Number.isInteger(value.minUsers) ? value.minUsers : null;
+  const maxUsers = value.maxUsers === null || Number.isInteger(value.maxUsers) ? value.maxUsers : null;
+
+  if (!tier || minUsers === null || maxUsers === undefined) {
+    return "n/a";
+  }
+  const label = MEMBERSHIP_SIZE_LABELS[tier] || tier;
+  const range = maxUsers === null ? `${minUsers}+ users` : `${minUsers}-${maxUsers} users`;
+  return `${label} (${range})`;
 }
 
 function renderSection(title, bodyHtml, intro = "") {
@@ -76,7 +99,7 @@ function renderListItems(values, emptyMessage = "Not provided.") {
 function renderData(data) {
   const instanceName = escapeHtml(data.instance?.name || "Community Window");
   const description = escapeHtml(data.description || "No description provided.");
-  const membershipSize = escapeHtml(formatEnum(data.membershipSizeRange));
+  const membershipSize = escapeHtml(formatMembershipSize(data.membershipSize));
   const llmMode = escapeHtml(data.llmScrapingPolicy?.mode || "n/a");
   const moderationScore =
     typeof data.moderationSatisfaction?.score === "number"

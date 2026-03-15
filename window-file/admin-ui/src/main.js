@@ -5,7 +5,18 @@ const statusLine = document.querySelector('#status-line');
 const saveButton = document.querySelector('#save-button');
 const loadButton = document.querySelector('#load-button');
 
-const sizeOptions = ['tiny', 'small', 'medium', 'large', 'very_large'];
+const sizeOptions = [
+  { tier: 'tiny', minUsers: 1, maxUsers: 50 },
+  { tier: 'small', minUsers: 51, maxUsers: 100 },
+  { tier: 'medium', minUsers: 101, maxUsers: 500 },
+  { tier: 'large', minUsers: 501, maxUsers: 2000 },
+  { tier: 'xlarge', minUsers: 2001, maxUsers: 10000 },
+  { tier: 'xxlarge', minUsers: 10001, maxUsers: 50000 },
+  { tier: 'huge', minUsers: 50001, maxUsers: 200000 },
+  { tier: 'massive', minUsers: 200001, maxUsers: null }
+];
+const sizeOptionValues = sizeOptions.map((option) => option.tier);
+const sizeByTier = Object.fromEntries(sizeOptions.map((option) => [option.tier, option]));
 const llmModes = ['allow', 'discourage', 'disallow', 'custom'];
 const relationshipTypes = ['friendly_neighbor', 'high_interaction', 'alternative_home', 'other'];
 
@@ -53,6 +64,18 @@ function addTextInput(parent, label, name, value = '') {
   return input;
 }
 
+function addNumberInput(parent, label, name, value = '', min = undefined) {
+  const input = document.createElement('input');
+  input.type = 'number';
+  input.name = name;
+  input.value = value;
+  if (typeof min === 'number') {
+    input.min = String(min);
+  }
+  parent.appendChild(buildField(label, input));
+  return input;
+}
+
 function addTextarea(parent, label, name, value = '') {
   const input = document.createElement('textarea');
   input.name = name;
@@ -94,6 +117,10 @@ function addMultiSelect(parent, label, name, values, selectedValues = []) {
   });
   parent.appendChild(buildField(label, select));
   return select;
+}
+
+function getSizeConfig(tier) {
+  return sizeByTier[tier] || sizeByTier.medium;
 }
 
 function buildListEditor(config) {
@@ -176,7 +203,36 @@ function renderForm(data) {
   const core = buildCard('Core');
   addTextInput(core, 'Spec Version', 'specVersion', data.specVersion || '0.1.0');
   addTextarea(core, 'Description', 'description', data.description || '');
-  addSelect(core, 'Membership Size Range', 'membershipSizeRange', sizeOptions, data.membershipSizeRange || 'medium');
+  const selectedMembershipSize = data.membershipSize || getSizeConfig('medium');
+  const selectedSizeConfig = getSizeConfig(selectedMembershipSize.tier);
+  const membershipTier = addSelect(
+    core,
+    'Membership Size Tier',
+    'membershipSize.tier',
+    sizeOptionValues,
+    selectedMembershipSize.tier || 'medium'
+  );
+  const membershipMinUsers = addNumberInput(
+    core,
+    'Membership Min Users',
+    'membershipSize.minUsers',
+    String(selectedMembershipSize.minUsers ?? selectedSizeConfig.minUsers),
+    1
+  );
+  const membershipMaxUsers = addNumberInput(
+    core,
+    'Membership Max Users (blank for open-ended)',
+    'membershipSize.maxUsers',
+    selectedMembershipSize.maxUsers === null || selectedMembershipSize.maxUsers === undefined
+      ? ''
+      : String(selectedMembershipSize.maxUsers),
+    1
+  );
+  membershipTier.addEventListener('change', () => {
+    const config = getSizeConfig(membershipTier.value);
+    membershipMinUsers.value = String(config.minUsers);
+    membershipMaxUsers.value = config.maxUsers === null ? '' : String(config.maxUsers);
+  });
   addTextarea(core, 'Link Policy', 'linkPolicy', data.linkPolicy || '');
   form.appendChild(core);
 
@@ -267,7 +323,18 @@ function renderForm(data) {
         contentWarnings: splitLines(getValue('contentWarnings')),
         topicTags: splitLines(getValue('topicTags')),
         pinnedContent: pinnedEditor.read().filter((item) => item.title || item.url),
-        membershipSizeRange: getValue('membershipSizeRange'),
+        membershipSize: (() => {
+          const tier = getValue('membershipSize.tier');
+          const selectedSize = getSizeConfig(tier);
+          const minUsersValue = Number.parseInt(getValue('membershipSize.minUsers'), 10);
+          const maxUsersText = getValue('membershipSize.maxUsers');
+          const maxUsersValue = maxUsersText === '' ? null : Number.parseInt(maxUsersText, 10);
+          return {
+            tier: selectedSize.tier,
+            minUsers: Number.isInteger(minUsersValue) ? minUsersValue : selectedSize.minUsers,
+            maxUsers: maxUsersValue === null ? selectedSize.maxUsers : maxUsersValue
+          };
+        })(),
         linkPolicy: getValue('linkPolicy'),
         memberFitSignals: {
           lookingFor: splitLines(getValue('memberFitSignals.lookingFor')),

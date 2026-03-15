@@ -28,13 +28,17 @@ def _sample_payload() -> dict:
         "contentWarnings": ["Politics"],
         "topicTags": ["tech"],
         "pinnedContent": [{"title": "Welcome", "url": "https://example.social/post/1"}],
-        "membershipSizeRange": "small",
+        "membershipSize": {
+            "tier": "small",
+            "minUsers": 51,
+            "maxUsers": 100,
+        },
         "linkPolicy": "Federate broadly, defederate for abuse.",
         "memberFitSignals": {
             "lookingFor": ["Respectful users"],
             "notLookingFor": ["Harassment"],
         },
-        "llmScrapingPolicy": {"mode": "discourage", "llmsTxtUrl": "https://example.social/llms.txt"},
+        "llmScrapingPolicy": {"mode": "disallow", "llmsTxtUrl": "https://example.social/llms.txt"},
     }
 
 
@@ -49,7 +53,7 @@ def _schema_payload() -> dict:
             "contentWarnings",
             "topicTags",
             "pinnedContent",
-            "membershipSizeRange",
+            "membershipSize",
             "linkPolicy",
             "memberFitSignals",
             "llmScrapingPolicy",
@@ -61,7 +65,15 @@ def _schema_payload() -> dict:
             "contentWarnings": {"type": "array", "items": {"type": "string"}},
             "topicTags": {"type": "array", "items": {"type": "string"}},
             "pinnedContent": {"type": "array"},
-            "membershipSizeRange": {"type": "string"},
+            "membershipSize": {
+                "type": "object",
+                "required": ["tier", "minUsers"],
+                "properties": {
+                    "tier": {"type": "string"},
+                    "minUsers": {"type": "integer"},
+                    "maxUsers": {"type": ["integer", "null"]},
+                },
+            },
             "linkPolicy": {"type": "string", "minLength": 1},
             "memberFitSignals": {"type": "object"},
             "llmScrapingPolicy": {"type": "object"},
@@ -114,6 +126,40 @@ def test_invalid_update_is_rejected(tmp_path: Path) -> None:
     assert response.status_code == 422
     detail = response.json()["detail"]
     assert isinstance(detail, list)
+
+
+def test_membership_size_with_invalid_bounds_is_rejected(tmp_path: Path) -> None:
+    configure_tmp_storage(tmp_path)
+    client = TestClient(app)
+    payload = _sample_payload()
+    payload["membershipSize"] = {
+        "tier": "small",
+        "minUsers": 51,
+        "maxUsers": 50,
+    }
+
+    response = client.put("/admin/api/community-window", json=payload)
+    assert response.status_code == 422
+    detail = response.json()["detail"]
+    assert isinstance(detail, list)
+
+
+def test_open_ended_massive_membership_size_is_accepted(tmp_path: Path) -> None:
+    configure_tmp_storage(tmp_path)
+    client = TestClient(app)
+    payload = _sample_payload()
+    payload["membershipSize"] = {
+        "tier": "massive",
+        "minUsers": 200001,
+        "maxUsers": None,
+    }
+
+    response = client.put("/admin/api/community-window", json=payload)
+    assert response.status_code == 200
+    body = response.json()
+    assert body["membershipSize"]["tier"] == "massive"
+    assert body["membershipSize"]["minUsers"] == 200001
+    assert body["membershipSize"]["maxUsers"] is None
 
 
 def test_atomic_write_creates_backup(tmp_path: Path) -> None:
